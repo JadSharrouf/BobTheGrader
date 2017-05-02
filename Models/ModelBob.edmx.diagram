@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f1f66fd53ef841c58bd38b22ff87afab" Name="Diagram1" ZoomLevel="67">
+        <EntityTypeShape EntityType="graderModel.Assignment" Width="1.5" PointX="0.75" PointY="7.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="graderModel.Course" Width="1.5" PointX="1" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="graderModel.Course_Assignments" Width="1.5" PointX="5.875" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="graderModel.CourseInstance" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="graderModel.Question" Width="1.5" PointX="6.875" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="graderModel.QuestionType" Width="1.5" PointX="7" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="graderModel.StudentCourseRegistration" Width="1.5" PointX="7" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="graderModel.SUBMISSION" Width="1.5" PointX="9.375" PointY="0.625" IsExpanded="true" />
+        <AssociationConnector Association="graderModel.FK_COURSE_A_REFERENCE_ASSIGNME" ManuallyRouted="false" />
+        <AssociationConnector Association="graderModel.FK_QUESTION_REFERENCE_ASSIGNME" ManuallyRouted="false" />
+        <AssociationConnector Association="graderModel.FK_COURSEIN_REFERENCE_COURSE" ManuallyRouted="false" />
+        <AssociationConnector Association="graderModel.FK_COURSE_A_REFERENCE_COURSEIN" ManuallyRouted="false" />
+        <AssociationConnector Association="graderModel.FK_STUDENTC_REFERENCE_COURSEIN" ManuallyRouted="false" />
+        <AssociationConnector Association="graderModel.FK_QUESTION_REFERENCE_QUESTION" ManuallyRouted="false" />
+        <AssociationConnector Association="graderModel.FK_SUBMISSI_REFERENCE_QUESTION" ManuallyRouted="false" />
+        <AssociationConnector Association="graderModel.FK_SUBMISSI_REFERENCE_STUDENTC" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="graderModel.database_firewall_rules" Width="1.5" PointX="13.5" PointY="0.75" />
+        <EntityTypeShape EntityType="graderModel.User" Width="1.5" PointX="3.5" PointY="0.5" />
+        <AssociationConnector Association="graderModel.courseteacher" />
+        <AssociationConnector Association="graderModel.FK_COURSEIN_REFERENCE_TEACHER1" />
+        <AssociationConnector Association="graderModel.studentcourse" />
+        <EntityTypeShape EntityType="graderModel.vwGrader" Width="1.5" PointX="11.75" PointY="0.75" />
+        <EntityTypeShape EntityType="graderModel.Permission" Width="1.5" PointX="2.5" PointY="12.5" />
+        <EntityTypeShape EntityType="graderModel.Role_Permissions" Width="1.5" PointX="11.625" PointY="3.125" />
+        <EntityTypeShape EntityType="graderModel.UserRole" Width="1.5" PointX="0.75" PointY="4.875" />
+        <AssociationConnector Association="graderModel.FK__Role_Perm__Permi__09A971A2" />
+        <AssociationConnector Association="graderModel.FK__Role_Perm__UserR__08B54D69" />
+        <AssociationConnector Association="graderModel.FK_Role_UserRoleId" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,1059 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="graderModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Assignment">
+          <Key>
+            <PropertyRef Name="AssignmentID" />
+          </Key>
+          <Property Name="AssignmentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="150" />
+          <Property Name="Link" Type="nvarchar" MaxLength="100" />
+          <Property Name="DEADLINE" Type="datetime" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="CourseID" />
+          </Key>
+          <Property Name="CourseID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Deadline" Type="datetime" />
+          <Property Name="Semester" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Course_Assignments">
+          <Key>
+            <PropertyRef Name="Course_AssignmentsID" />
+          </Key>
+          <Property Name="Course_AssignmentsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AssignmentID" Type="int" Nullable="false" />
+          <Property Name="CourseInstanceID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CourseInstance">
+          <Key>
+            <PropertyRef Name="CourseInstanceID" />
+          </Key>
+          <Property Name="CourseInstanceID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CourseID" Type="int" Nullable="false" />
+          <Property Name="TEACHERID" Type="int" Nullable="false" />
+          <Property Name="SectionNumber" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="PermissionId" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Question">
+          <Key>
+            <PropertyRef Name="QuestionID" />
+          </Key>
+          <Property Name="QuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AssignmentID" Type="int" Nullable="false" />
+          <Property Name="QuestionTypeID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="MaximumTries" Type="int" Nullable="false" />
+          <Property Name="MaximumGrade" Type="int" Nullable="false" />
+          <Property Name="output" Type="varchar" MaxLength="2000" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QuestionType">
+          <Key>
+            <PropertyRef Name="QuestionTypeID" />
+          </Key>
+          <Property Name="QuestionTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Role_Permissions">
+          <Key>
+            <PropertyRef Name="Role_PermissionID" />
+          </Key>
+          <Property Name="Role_PermissionID" Type="int" Nullable="false" />
+          <Property Name="UserRoleID" Type="int" Nullable="false" />
+          <Property Name="PermissionID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StudentCourseRegistration">
+          <Key>
+            <PropertyRef Name="StudentCourseRegistrationID" />
+          </Key>
+          <Property Name="StudentCourseRegistrationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="STUDENTID" Type="int" Nullable="false" />
+          <Property Name="CourseInstanceID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SUBMISSION">
+          <Key>
+            <PropertyRef Name="SubmissionID" />
+          </Key>
+          <Property Name="SubmissionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QuestionID" Type="int" Nullable="false" />
+          <Property Name="StudentCourseRegistrationID" Type="int" Nullable="false" />
+          <Property Name="TRIES" Type="int" Nullable="false" />
+          <Property Name="FILE" Type="varchar" MaxLength="100" />
+          <Property Name="GRADE" Type="int" />
+          <Property Name="SubmittedDate" Type="datetime" />
+          <Property Name="Result" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="UserRoleID" />
+          </Key>
+          <Property Name="UserRoleID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="100" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="UserRoleID" Type="int" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'grader.dbo.vwGrader' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwGrader">
+          <Key>
+            <PropertyRef Name="SubmissionId" />
+            <PropertyRef Name="output" />
+            <PropertyRef Name="QuestionId" />
+            <PropertyRef Name="Title" />
+          </Key>
+          <Property Name="SubmissionId" Type="int" Nullable="false" />
+          <Property Name="output" Type="varchar" MaxLength="2000" Nullable="false" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'grader.sys.database_firewall_rules' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="start_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="end_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="modify_date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="AsID_As_CA_Cascade">
+          <End Role="Assignment" Type="Self.Assignment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Course_Assignments" Type="Self.Course_Assignments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assignment">
+              <PropertyRef Name="AssignmentID" />
+            </Principal>
+            <Dependent Role="Course_Assignments">
+              <PropertyRef Name="AssignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="courseteacher">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="CourseInstance" Type="Self.CourseInstance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="CourseInstance">
+              <PropertyRef Name="TEACHERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CourseIns__Cours__0C85DE4D">
+          <End Role="Course" Type="Self.Course" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CourseInstance" Type="Self.CourseInstance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="CourseID" />
+            </Principal>
+            <Dependent Role="CourseInstance">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Role_Perm__Permi__09A971A2">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="1" />
+          <End Role="Role_Permissions" Type="Self.Role_Permissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="Role_Permissions">
+              <PropertyRef Name="PermissionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Role_Perm__UserR__08B54D69">
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="1" />
+          <End Role="Role_Permissions" Type="Self.Role_Permissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRole">
+              <PropertyRef Name="UserRoleID" />
+            </Principal>
+            <Dependent Role="Role_Permissions">
+              <PropertyRef Name="UserRoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COURSE_A_REFERENCE_ASSIGNME">
+          <End Role="Assignment" Type="Self.Assignment" Multiplicity="1" />
+          <End Role="Course_Assignments" Type="Self.Course_Assignments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assignment">
+              <PropertyRef Name="AssignmentID" />
+            </Principal>
+            <Dependent Role="Course_Assignments">
+              <PropertyRef Name="AssignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COURSE_A_REFERENCE_COURSEIN">
+          <End Role="CourseInstance" Type="Self.CourseInstance" Multiplicity="1" />
+          <End Role="Course_Assignments" Type="Self.Course_Assignments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CourseInstance">
+              <PropertyRef Name="CourseInstanceID" />
+            </Principal>
+            <Dependent Role="Course_Assignments">
+              <PropertyRef Name="CourseInstanceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COURSEIN_REFERENCE_TEACHER">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="StudentCourseRegistration" Type="Self.StudentCourseRegistration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="StudentCourseRegistration">
+              <PropertyRef Name="STUDENTID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUESTION_REFERENCE_ASSIGNME">
+          <End Role="Assignment" Type="Self.Assignment" Multiplicity="1" />
+          <End Role="Question" Type="Self.Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assignment">
+              <PropertyRef Name="AssignmentID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="AssignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUESTION_REFERENCE_QUESTION">
+          <End Role="QuestionType" Type="Self.QuestionType" Multiplicity="1" />
+          <End Role="Question" Type="Self.Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionType">
+              <PropertyRef Name="QuestionTypeID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="QuestionTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Role_UserRoleId">
+          <End Role="UserRole" Type="Self.UserRole" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRole">
+              <PropertyRef Name="UserRoleID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="UserRoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STUDENTC_REFERENCE_COURSEIN">
+          <End Role="CourseInstance" Type="Self.CourseInstance" Multiplicity="1" />
+          <End Role="StudentCourseRegistration" Type="Self.StudentCourseRegistration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CourseInstance">
+              <PropertyRef Name="CourseInstanceID" />
+            </Principal>
+            <Dependent Role="StudentCourseRegistration">
+              <PropertyRef Name="CourseInstanceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SUBMISSI_REFERENCE_QUESTION">
+          <End Role="Question" Type="Self.Question" Multiplicity="1" />
+          <End Role="SUBMISSION" Type="Self.SUBMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="QuestionID" />
+            </Principal>
+            <Dependent Role="SUBMISSION">
+              <PropertyRef Name="QuestionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SUBMISSI_REFERENCE_STUDENTC">
+          <End Role="StudentCourseRegistration" Type="Self.StudentCourseRegistration" Multiplicity="1" />
+          <End Role="SUBMISSION" Type="Self.SUBMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentCourseRegistration">
+              <PropertyRef Name="StudentCourseRegistrationID" />
+            </Principal>
+            <Dependent Role="SUBMISSION">
+              <PropertyRef Name="StudentCourseRegistrationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_T1_T2_Cascade">
+          <End Role="Assignment" Type="Self.Assignment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Question" Type="Self.Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assignment">
+              <PropertyRef Name="AssignmentID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="AssignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="QID_Sub_Q_Cascade">
+          <End Role="Question" Type="Self.Question" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="SUBMISSION" Type="Self.SUBMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="QuestionID" />
+            </Principal>
+            <Dependent Role="SUBMISSION">
+              <PropertyRef Name="QuestionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="studentcourse">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="StudentCourseRegistration" Type="Self.StudentCourseRegistration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="StudentCourseRegistration">
+              <PropertyRef Name="STUDENTID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="LoginByUsernamePassword" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="graderModelStoreContainer">
+          <EntitySet Name="Assignment" EntityType="Self.Assignment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Course_Assignments" EntityType="Self.Course_Assignments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CourseInstance" EntityType="Self.CourseInstance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Question" EntityType="Self.Question" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="QuestionType" EntityType="Self.QuestionType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role_Permissions" EntityType="Self.Role_Permissions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentCourseRegistration" EntityType="Self.StudentCourseRegistration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SUBMISSION" EntityType="Self.SUBMISSION" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vwGrader" EntityType="Self.vwGrader" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vwGrader].[SubmissionId] AS [SubmissionId], 
+    [vwGrader].[output] AS [output], 
+    [vwGrader].[QuestionId] AS [QuestionId], 
+    [vwGrader].[Title] AS [Title]
+    FROM [dbo].[vwGrader] AS [vwGrader]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" store:Type="Views" store:Schema="sys">
+            <DefiningQuery>SELECT 
+    [database_firewall_rules].[id] AS [id], 
+    [database_firewall_rules].[name] AS [name], 
+    [database_firewall_rules].[start_ip_address] AS [start_ip_address], 
+    [database_firewall_rules].[end_ip_address] AS [end_ip_address], 
+    [database_firewall_rules].[create_date] AS [create_date], 
+    [database_firewall_rules].[modify_date] AS [modify_date]
+    FROM [sys].[database_firewall_rules] AS [database_firewall_rules]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="AsID_As_CA_Cascade" Association="Self.AsID_As_CA_Cascade">
+            <End Role="Assignment" EntitySet="Assignment" />
+            <End Role="Course_Assignments" EntitySet="Course_Assignments" />
+          </AssociationSet>
+          <AssociationSet Name="courseteacher" Association="Self.courseteacher">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="CourseInstance" EntitySet="CourseInstance" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CourseIns__Cours__0C85DE4D" Association="Self.FK__CourseIns__Cours__0C85DE4D">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="CourseInstance" EntitySet="CourseInstance" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Role_Perm__Permi__09A971A2" Association="Self.FK__Role_Perm__Permi__09A971A2">
+            <End Role="Permission" EntitySet="Permission" />
+            <End Role="Role_Permissions" EntitySet="Role_Permissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Role_Perm__UserR__08B54D69" Association="Self.FK__Role_Perm__UserR__08B54D69">
+            <End Role="UserRole" EntitySet="UserRole" />
+            <End Role="Role_Permissions" EntitySet="Role_Permissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COURSE_A_REFERENCE_ASSIGNME" Association="Self.FK_COURSE_A_REFERENCE_ASSIGNME">
+            <End Role="Assignment" EntitySet="Assignment" />
+            <End Role="Course_Assignments" EntitySet="Course_Assignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COURSE_A_REFERENCE_COURSEIN" Association="Self.FK_COURSE_A_REFERENCE_COURSEIN">
+            <End Role="CourseInstance" EntitySet="CourseInstance" />
+            <End Role="Course_Assignments" EntitySet="Course_Assignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COURSEIN_REFERENCE_TEACHER" Association="Self.FK_COURSEIN_REFERENCE_TEACHER">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistration" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUESTION_REFERENCE_ASSIGNME" Association="Self.FK_QUESTION_REFERENCE_ASSIGNME">
+            <End Role="Assignment" EntitySet="Assignment" />
+            <End Role="Question" EntitySet="Question" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUESTION_REFERENCE_QUESTION" Association="Self.FK_QUESTION_REFERENCE_QUESTION">
+            <End Role="QuestionType" EntitySet="QuestionType" />
+            <End Role="Question" EntitySet="Question" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Role_UserRoleId" Association="Self.FK_Role_UserRoleId">
+            <End Role="UserRole" EntitySet="UserRole" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STUDENTC_REFERENCE_COURSEIN" Association="Self.FK_STUDENTC_REFERENCE_COURSEIN">
+            <End Role="CourseInstance" EntitySet="CourseInstance" />
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistration" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SUBMISSI_REFERENCE_QUESTION" Association="Self.FK_SUBMISSI_REFERENCE_QUESTION">
+            <End Role="Question" EntitySet="Question" />
+            <End Role="SUBMISSION" EntitySet="SUBMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SUBMISSI_REFERENCE_STUDENTC" Association="Self.FK_SUBMISSI_REFERENCE_STUDENTC">
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistration" />
+            <End Role="SUBMISSION" EntitySet="SUBMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="FK_T1_T2_Cascade" Association="Self.FK_T1_T2_Cascade">
+            <End Role="Assignment" EntitySet="Assignment" />
+            <End Role="Question" EntitySet="Question" />
+          </AssociationSet>
+          <AssociationSet Name="QID_Sub_Q_Cascade" Association="Self.QID_Sub_Q_Cascade">
+            <End Role="Question" EntitySet="Question" />
+            <End Role="SUBMISSION" EntitySet="SUBMISSION" />
+          </AssociationSet>
+          <AssociationSet Name="studentcourse" Association="Self.studentcourse">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistration" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="graderModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Assignment">
+          <Key>
+            <PropertyRef Name="AssignmentID" />
+          </Key>
+          <Property Name="AssignmentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Link" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DEADLINE" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Course_Assignments" Relationship="Self.FK_COURSE_A_REFERENCE_ASSIGNME" FromRole="Assignment" ToRole="Course_Assignments" />
+          <NavigationProperty Name="Questions" Relationship="Self.FK_QUESTION_REFERENCE_ASSIGNME" FromRole="Assignment" ToRole="Question" />
+          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="CourseID" />
+          </Key>
+          <Property Name="CourseID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="CourseInstances" Relationship="Self.FK_COURSEIN_REFERENCE_COURSE" FromRole="Course" ToRole="CourseInstance" />
+          <Property Name="Deadline" Type="DateTime" Precision="3" />
+          <Property Name="Semester" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Course_Assignments">
+          <Key>
+            <PropertyRef Name="Course_AssignmentsID" />
+          </Key>
+          <Property Name="Course_AssignmentsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AssignmentID" Type="Int32" Nullable="false" />
+          <Property Name="CourseInstanceID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Assignment" Relationship="Self.FK_COURSE_A_REFERENCE_ASSIGNME" FromRole="Course_Assignments" ToRole="Assignment" />
+          <NavigationProperty Name="CourseInstance" Relationship="Self.FK_COURSE_A_REFERENCE_COURSEIN" FromRole="Course_Assignments" ToRole="CourseInstance" />
+        </EntityType>
+        <EntityType Name="CourseInstance">
+          <Key>
+            <PropertyRef Name="CourseInstanceID" />
+          </Key>
+          <Property Name="CourseInstanceID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CourseID" Type="Int32" Nullable="false" />
+          <Property Name="TEACHERID" Type="Int32" Nullable="false" />
+          <Property Name="SectionNumber" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Course" Relationship="Self.FK_COURSEIN_REFERENCE_COURSE" FromRole="CourseInstance" ToRole="Course" />
+          <NavigationProperty Name="Course_Assignments" Relationship="Self.FK_COURSE_A_REFERENCE_COURSEIN" FromRole="CourseInstance" ToRole="Course_Assignments" />
+          <NavigationProperty Name="StudentCourseRegistrations" Relationship="Self.FK_STUDENTC_REFERENCE_COURSEIN" FromRole="CourseInstance" ToRole="StudentCourseRegistration" />
+          <NavigationProperty Name="User" Relationship="graderModel.courseteacher" FromRole="CourseInstance" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Question">
+          <Key>
+            <PropertyRef Name="QuestionID" />
+          </Key>
+          <Property Name="QuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AssignmentID" Type="Int32" Nullable="false" />
+          <Property Name="QuestionTypeID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MaximumTries" Type="Int32" Nullable="false" />
+          <Property Name="MaximumGrade" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Assignment" Relationship="Self.FK_QUESTION_REFERENCE_ASSIGNME" FromRole="Question" ToRole="Assignment" />
+          <NavigationProperty Name="QuestionType" Relationship="Self.FK_QUESTION_REFERENCE_QUESTION" FromRole="Question" ToRole="QuestionType" />
+          <NavigationProperty Name="SUBMISSIONs" Relationship="Self.FK_SUBMISSI_REFERENCE_QUESTION" FromRole="Question" ToRole="SUBMISSION" />
+          <Property Name="output" Type="String" MaxLength="2000" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="QuestionType">
+          <Key>
+            <PropertyRef Name="QuestionTypeID" />
+          </Key>
+          <Property Name="QuestionTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Questions" Relationship="Self.FK_QUESTION_REFERENCE_QUESTION" FromRole="QuestionType" ToRole="Question" />
+        </EntityType>
+        <EntityType Name="StudentCourseRegistration">
+          <Key>
+            <PropertyRef Name="StudentCourseRegistrationID" />
+          </Key>
+          <Property Name="StudentCourseRegistrationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="STUDENTID" Type="Int32" Nullable="false" />
+          <Property Name="CourseInstanceID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="CourseInstance" Relationship="Self.FK_STUDENTC_REFERENCE_COURSEIN" FromRole="StudentCourseRegistration" ToRole="CourseInstance" />
+          <NavigationProperty Name="SUBMISSIONs" Relationship="Self.FK_SUBMISSI_REFERENCE_STUDENTC" FromRole="StudentCourseRegistration" ToRole="SUBMISSION" />
+          <NavigationProperty Name="User" Relationship="graderModel.FK_COURSEIN_REFERENCE_TEACHER1" FromRole="StudentCourseRegistration" ToRole="User" />
+        </EntityType>
+        <EntityType Name="SUBMISSION">
+          <Key>
+            <PropertyRef Name="SubmissionID" />
+          </Key>
+          <Property Name="SubmissionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QuestionID" Type="Int32" Nullable="false" />
+          <Property Name="StudentCourseRegistrationID" Type="Int32" Nullable="false" />
+          <Property Name="TRIES" Type="Int32" Nullable="false" />
+          <Property Name="FILE" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="GRADE" Type="Int32" />
+          <Property Name="SubmittedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Question" Relationship="Self.FK_SUBMISSI_REFERENCE_QUESTION" FromRole="SUBMISSION" ToRole="Question" />
+          <NavigationProperty Name="StudentCourseRegistration" Relationship="Self.FK_SUBMISSI_REFERENCE_STUDENTC" FromRole="SUBMISSION" ToRole="StudentCourseRegistration" />
+          <Property Name="Result" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_COURSE_A_REFERENCE_ASSIGNME">
+          <End Role="Assignment" Type="Self.Assignment" Multiplicity="1" />
+          <End Role="Course_Assignments" Type="Self.Course_Assignments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assignment">
+              <PropertyRef Name="AssignmentID" />
+            </Principal>
+            <Dependent Role="Course_Assignments">
+              <PropertyRef Name="AssignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUESTION_REFERENCE_ASSIGNME">
+          <End Role="Assignment" Type="Self.Assignment" Multiplicity="1" />
+          <End Role="Question" Type="Self.Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Assignment">
+              <PropertyRef Name="AssignmentID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="AssignmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COURSEIN_REFERENCE_COURSE">
+          <End Role="Course" Type="Self.Course" Multiplicity="1" />
+          <End Role="CourseInstance" Type="Self.CourseInstance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="CourseID" />
+            </Principal>
+            <Dependent Role="CourseInstance">
+              <PropertyRef Name="CourseID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COURSE_A_REFERENCE_COURSEIN">
+          <End Role="CourseInstance" Type="Self.CourseInstance" Multiplicity="1" />
+          <End Role="Course_Assignments" Type="Self.Course_Assignments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CourseInstance">
+              <PropertyRef Name="CourseInstanceID" />
+            </Principal>
+            <Dependent Role="Course_Assignments">
+              <PropertyRef Name="CourseInstanceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_STUDENTC_REFERENCE_COURSEIN">
+          <End Role="CourseInstance" Type="Self.CourseInstance" Multiplicity="1" />
+          <End Role="StudentCourseRegistration" Type="Self.StudentCourseRegistration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CourseInstance">
+              <PropertyRef Name="CourseInstanceID" />
+            </Principal>
+            <Dependent Role="StudentCourseRegistration">
+              <PropertyRef Name="CourseInstanceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QUESTION_REFERENCE_QUESTION">
+          <End Role="QuestionType" Type="Self.QuestionType" Multiplicity="1" />
+          <End Role="Question" Type="Self.Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionType">
+              <PropertyRef Name="QuestionTypeID" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="QuestionTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SUBMISSI_REFERENCE_QUESTION">
+          <End Role="Question" Type="Self.Question" Multiplicity="1" />
+          <End Role="SUBMISSION" Type="Self.SUBMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="QuestionID" />
+            </Principal>
+            <Dependent Role="SUBMISSION">
+              <PropertyRef Name="QuestionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SUBMISSI_REFERENCE_STUDENTC">
+          <End Role="StudentCourseRegistration" Type="Self.StudentCourseRegistration" Multiplicity="1" />
+          <End Role="SUBMISSION" Type="Self.SUBMISSION" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="StudentCourseRegistration">
+              <PropertyRef Name="StudentCourseRegistrationID" />
+            </Principal>
+            <Dependent Role="SUBMISSION">
+              <PropertyRef Name="StudentCourseRegistrationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="graderEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Assignments" EntityType="Self.Assignment" />
+          <EntitySet Name="Courses" EntityType="Self.Course" />
+          <EntitySet Name="Course_Assignments" EntityType="Self.Course_Assignments" />
+          <EntitySet Name="CourseInstances" EntityType="Self.CourseInstance" />
+          <EntitySet Name="Questions" EntityType="Self.Question" />
+          <EntitySet Name="QuestionTypes" EntityType="Self.QuestionType" />
+          <EntitySet Name="StudentCourseRegistrations" EntityType="Self.StudentCourseRegistration" />
+          <EntitySet Name="SUBMISSIONs" EntityType="Self.SUBMISSION" />
+          <AssociationSet Name="FK_COURSE_A_REFERENCE_ASSIGNME" Association="Self.FK_COURSE_A_REFERENCE_ASSIGNME">
+            <End Role="Assignment" EntitySet="Assignments" />
+            <End Role="Course_Assignments" EntitySet="Course_Assignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUESTION_REFERENCE_ASSIGNME" Association="Self.FK_QUESTION_REFERENCE_ASSIGNME">
+            <End Role="Assignment" EntitySet="Assignments" />
+            <End Role="Question" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COURSEIN_REFERENCE_COURSE" Association="Self.FK_COURSEIN_REFERENCE_COURSE">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="CourseInstance" EntitySet="CourseInstances" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COURSE_A_REFERENCE_COURSEIN" Association="Self.FK_COURSE_A_REFERENCE_COURSEIN">
+            <End Role="CourseInstance" EntitySet="CourseInstances" />
+            <End Role="Course_Assignments" EntitySet="Course_Assignments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_STUDENTC_REFERENCE_COURSEIN" Association="Self.FK_STUDENTC_REFERENCE_COURSEIN">
+            <End Role="CourseInstance" EntitySet="CourseInstances" />
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistrations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QUESTION_REFERENCE_QUESTION" Association="Self.FK_QUESTION_REFERENCE_QUESTION">
+            <End Role="QuestionType" EntitySet="QuestionTypes" />
+            <End Role="Question" EntitySet="Questions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SUBMISSI_REFERENCE_QUESTION" Association="Self.FK_SUBMISSI_REFERENCE_QUESTION">
+            <End Role="Question" EntitySet="Questions" />
+            <End Role="SUBMISSION" EntitySet="SUBMISSIONs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SUBMISSI_REFERENCE_STUDENTC" Association="Self.FK_SUBMISSI_REFERENCE_STUDENTC">
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistrations" />
+            <End Role="SUBMISSION" EntitySet="SUBMISSIONs" />
+          </AssociationSet>
+          <EntitySet Name="database_firewall_rules" EntityType="graderModel.database_firewall_rules" />
+          <EntitySet Name="Users" EntityType="graderModel.User" />
+          <AssociationSet Name="courseteacher" Association="graderModel.courseteacher">
+            <End Role="User" EntitySet="Users" />
+            <End Role="CourseInstance" EntitySet="CourseInstances" />
+          </AssociationSet>
+          <AssociationSet Name="FK_COURSEIN_REFERENCE_TEACHER1" Association="graderModel.FK_COURSEIN_REFERENCE_TEACHER1">
+            <End Role="User" EntitySet="Users" />
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistrations" />
+          </AssociationSet>
+          <AssociationSet Name="studentcourse" Association="graderModel.studentcourse">
+            <End Role="User" EntitySet="Users" />
+            <End Role="StudentCourseRegistration" EntitySet="StudentCourseRegistrations" />
+          </AssociationSet>
+          <EntitySet Name="vwGraders" EntityType="graderModel.vwGrader" />
+          <EntitySet Name="Permissions" EntityType="graderModel.Permission" />
+          <EntitySet Name="Role_Permissions" EntityType="graderModel.Role_Permissions" />
+          <EntitySet Name="UserRoles" EntityType="graderModel.UserRole" />
+          <AssociationSet Name="FK__Role_Perm__Permi__09A971A2" Association="graderModel.FK__Role_Perm__Permi__09A971A2">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="Role_Permissions" EntitySet="Role_Permissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Role_Perm__UserR__08B54D69" Association="graderModel.FK__Role_Perm__UserR__08B54D69">
+            <End Role="UserRole" EntitySet="UserRoles" />
+            <End Role="Role_Permissions" EntitySet="Role_Permissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Role_UserRoleId" Association="graderModel.FK_Role_UserRoleId">
+            <End Role="UserRole" EntitySet="UserRoles" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <FunctionImport Name="LoginByUsernamePassword" ReturnType="Collection(graderModel.LoginByUsernamePassword_Result)">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="start_ip_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="end_ip_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CourseInstances" Relationship="graderModel.courseteacher" FromRole="User" ToRole="CourseInstance" />
+          <NavigationProperty Name="StudentCourseRegistrations" Relationship="graderModel.FK_COURSEIN_REFERENCE_TEACHER1" FromRole="User" ToRole="StudentCourseRegistration" />
+          <Property Name="UserRoleID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UserRole" Relationship="graderModel.FK_Role_UserRoleId" FromRole="User" ToRole="UserRole" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="courseteacher">
+          <End Type="graderModel.User" Role="User" Multiplicity="1" />
+          <End Type="graderModel.CourseInstance" Role="CourseInstance" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="CourseInstance">
+              <PropertyRef Name="TEACHERID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_COURSEIN_REFERENCE_TEACHER1">
+          <End Type="graderModel.User" Role="User" Multiplicity="1" />
+          <End Type="graderModel.StudentCourseRegistration" Role="StudentCourseRegistration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="StudentCourseRegistration">
+              <PropertyRef Name="STUDENTID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="studentcourse">
+          <End Type="graderModel.User" Role="User" Multiplicity="1" />
+          <End Type="graderModel.StudentCourseRegistration" Role="StudentCourseRegistration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="StudentCourseRegistration">
+              <PropertyRef Name="STUDENTID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="vwGrader">
+          <Key>
+            <PropertyRef Name="QuestionId" />
+            <PropertyRef Name="SubmissionId" />
+            <PropertyRef Name="output" />
+            <PropertyRef Name="Title" />
+          </Key>
+          <Property Name="QuestionId" Type="Int32" Nullable="false" />
+          <Property Name="SubmissionId" Type="Int32" Nullable="false" />
+          <Property Name="output" Type="String" Nullable="false" MaxLength="2000" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="PermissionId" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Role_Permissions" Relationship="graderModel.FK__Role_Perm__Permi__09A971A2" FromRole="Permission" ToRole="Role_Permissions" />
+        </EntityType>
+        <EntityType Name="Role_Permissions">
+          <Key>
+            <PropertyRef Name="Role_PermissionID" />
+          </Key>
+          <Property Name="Role_PermissionID" Type="Int32" Nullable="false" />
+          <Property Name="UserRoleID" Type="Int32" Nullable="false" />
+          <Property Name="PermissionID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Permission" Relationship="graderModel.FK__Role_Perm__Permi__09A971A2" FromRole="Role_Permissions" ToRole="Permission" />
+          <NavigationProperty Name="UserRole" Relationship="graderModel.FK__Role_Perm__UserR__08B54D69" FromRole="Role_Permissions" ToRole="UserRole" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="UserRoleID" />
+          </Key>
+          <Property Name="UserRoleID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Role_Permissions" Relationship="graderModel.FK__Role_Perm__UserR__08B54D69" FromRole="UserRole" ToRole="Role_Permissions" />
+          <NavigationProperty Name="Users" Relationship="graderModel.FK_Role_UserRoleId" FromRole="UserRole" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__Role_Perm__Permi__09A971A2">
+          <End Type="graderModel.Permission" Role="Permission" Multiplicity="1" />
+          <End Type="graderModel.Role_Permissions" Role="Role_Permissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="Role_Permissions">
+              <PropertyRef Name="PermissionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Role_Perm__UserR__08B54D69">
+          <End Type="graderModel.UserRole" Role="UserRole" Multiplicity="1" />
+          <End Type="graderModel.Role_Permissions" Role="Role_Permissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRole">
+              <PropertyRef Name="UserRoleID" />
+            </Principal>
+            <Dependent Role="Role_Permissions">
+              <PropertyRef Name="UserRoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Role_UserRoleId">
+          <End Type="graderModel.UserRole" Role="UserRole" Multiplicity="1" />
+          <End Type="graderModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRole">
+              <PropertyRef Name="UserRoleID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="UserRoleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="LoginByUsernamePassword_Result">
+          <Property Type="Int32" Name="userid" Nullable="false" />
+          <Property Type="String" Name="email" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="password" Nullable="false" MaxLength="20" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="graderModelStoreContainer" CdmEntityContainer="graderEntities">
+          <EntitySetMapping Name="Assignments">
+            <EntityTypeMapping TypeName="graderModel.Assignment">
+              <MappingFragment StoreEntitySet="Assignment">
+                <ScalarProperty Name="DEADLINE" ColumnName="DEADLINE" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="AssignmentID" ColumnName="AssignmentID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Link" ColumnName="Link" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Courses">
+            <EntityTypeMapping TypeName="graderModel.Course">
+              <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="Semester" ColumnName="Semester" />
+                <ScalarProperty Name="Deadline" ColumnName="Deadline" />
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Course_Assignments">
+            <EntityTypeMapping TypeName="graderModel.Course_Assignments">
+              <MappingFragment StoreEntitySet="Course_Assignments">
+                <ScalarProperty Name="Course_AssignmentsID" ColumnName="Course_AssignmentsID" />
+                <ScalarProperty Name="AssignmentID" ColumnName="AssignmentID" />
+                <ScalarProperty Name="CourseInstanceID" ColumnName="CourseInstanceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CourseInstances">
+            <EntityTypeMapping TypeName="graderModel.CourseInstance">
+              <MappingFragment StoreEntitySet="CourseInstance">
+                <ScalarProperty Name="CourseInstanceID" ColumnName="CourseInstanceID" />
+                <ScalarProperty Name="CourseID" ColumnName="CourseID" />
+                <ScalarProperty Name="TEACHERID" ColumnName="TEACHERID" />
+                <ScalarProperty Name="SectionNumber" ColumnName="SectionNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Questions">
+            <EntityTypeMapping TypeName="graderModel.Question">
+              <MappingFragment StoreEntitySet="Question">
+                <ScalarProperty Name="output" ColumnName="output" />
+                <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
+                <ScalarProperty Name="AssignmentID" ColumnName="AssignmentID" />
+                <ScalarProperty Name="QuestionTypeID" ColumnName="QuestionTypeID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="MaximumTries" ColumnName="MaximumTries" />
+                <ScalarProperty Name="MaximumGrade" ColumnName="MaximumGrade" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuestionTypes">
+            <EntityTypeMapping TypeName="graderModel.QuestionType">
+              <MappingFragment StoreEntitySet="QuestionType">
+                <ScalarProperty Name="QuestionTypeID" ColumnName="QuestionTypeID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentCourseRegistrations">
+            <EntityTypeMapping TypeName="graderModel.StudentCourseRegistration">
+              <MappingFragment StoreEntitySet="StudentCourseRegistration">
+                <ScalarProperty Name="StudentCourseRegistrationID" ColumnName="StudentCourseRegistrationID" />
+                <ScalarProperty Name="STUDENTID" ColumnName="STUDENTID" />
+                <ScalarProperty Name="CourseInstanceID" ColumnName="CourseInstanceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SUBMISSIONs">
+            <EntityTypeMapping TypeName="graderModel.SUBMISSION">
+              <MappingFragment StoreEntitySet="SUBMISSION">
+                <ScalarProperty Name="Result" ColumnName="Result" />
+                <ScalarProperty Name="SubmissionID" ColumnName="SubmissionID" />
+                <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
+                <ScalarProperty Name="StudentCourseRegistrationID" ColumnName="StudentCourseRegistrationID" />
+                <ScalarProperty Name="TRIES" ColumnName="TRIES" />
+                <ScalarProperty Name="FILE" ColumnName="FILE" />
+                <ScalarProperty Name="GRADE" ColumnName="GRADE" />
+                <ScalarProperty Name="SubmittedDate" ColumnName="SubmittedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="database_firewall_rules">
+            <EntityTypeMapping TypeName="graderModel.database_firewall_rules">
+              <MappingFragment StoreEntitySet="database_firewall_rules">
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="end_ip_address" ColumnName="end_ip_address" />
+                <ScalarProperty Name="start_ip_address" ColumnName="start_ip_address" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="graderModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="UserRoleID" ColumnName="UserRoleID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vwGraders">
+            <EntityTypeMapping TypeName="graderModel.vwGrader">
+              <MappingFragment StoreEntitySet="vwGrader">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="output" ColumnName="output" />
+                <ScalarProperty Name="SubmissionId" ColumnName="SubmissionId" />
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Permissions">
+            <EntityTypeMapping TypeName="graderModel.Permission">
+              <MappingFragment StoreEntitySet="Permission">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Role_Permissions">
+            <EntityTypeMapping TypeName="graderModel.Role_Permissions">
+              <MappingFragment StoreEntitySet="Role_Permissions">
+                <ScalarProperty Name="PermissionID" ColumnName="PermissionID" />
+                <ScalarProperty Name="UserRoleID" ColumnName="UserRoleID" />
+                <ScalarProperty Name="Role_PermissionID" ColumnName="Role_PermissionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="graderModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRole">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="UserRoleID" ColumnName="UserRoleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="LoginByUsernamePassword" FunctionName="graderModel.Store.LoginByUsernamePassword">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="graderModel.LoginByUsernamePassword_Result">
+                <ScalarProperty Name="userid" ColumnName="userid" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
