@@ -1,0 +1,15 @@
+﻿@model IEnumerable<BobTheGrader.Models.User>
+@{
+    ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<address>
+    If you have any concerns, please feel free to contact your course instructors and assistants on the following emails:<br /><br />
+    @foreach (var user in Model)
+    {
+        <b>@user.UserName: </b>@user.Email<br />
+    }
+</address>

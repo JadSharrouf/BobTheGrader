@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewBag.Title = "Help";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h3>Users</h3>
+<ul>
+    <li>To View Users: Click on Users in the Navigation Bar</li>
+    <li>To Change the Role or Delete a User: Users -> Change Role/Delete the Desired User (You Must be An Admin)</li>
+    <li>Roles:
+        <ul>
+            <li style="list-style-type: '-'">Unidentified: All functionalities are locked.</li>
+            <li style="list-style-type: '-'">Student: Can submit assignments for courses they are registered in.</li>
+            <li style="list-style-type: '-'">Teacher: Can create Courses/Section as well as Assignments/Questions and add.them to their Sections. They can also view grades and reports of students in their sections.</li>
+            <li style="list-style-type: '-'"> Admin: Can Change the Roles of Users or delete them. Otherwise, an admin has the same functionalities as a teacher.</li>
+        </ul>
+    </li>
+</ul>
+<h3>Courses</h3>
+<ul>
+    <li>To View Courses: Click on Courses in the Navigation Bar</li>
+    <li>To Create Courses: Courses -> Add Course</li>
+    <li>To Edit Courses: Courses -> Edit the Desired Course</li>
+    <li>To Delete Courses: Courses -> Delete the Desired Course</li>
+</ul>
+<h3>Section</h3>
+<ul>
+    <li>To View Sections (2 ways): Courses -> Select the Desired Course</li>
+    <li>
+        To Create Sections (2 ways):
+        <ul>
+            <li style="list-style-type: '-'">Courses -> Click on Desired Course -> Add Section</li>
+            <li style="list-style-type: '-'">Courses -> Edit the Desired Course -> Save -> Add Section</li>
+            <li style="list-style-type: '-'"><b>To Add Students to Sections: In “Add Section” -> Drag “.txt” file with one student email per line</b></li>
+        </ul>
+    </li>
+    <li>
+        To Edit/Delete Sections: 
+        <ul>
+            <li style="list-style-type: '-'">Courses -> Select the Desired Course -> Edit/Delete the Desired Section</li>
+        </ul>
+    </li>
+    <li>To Delete Sections: Courses -> Select the Desired Course -> Delete the Desired Section</li>
+</ul>
+
+<h3>Assignments & Course Assignments</h3>
+<ul>
+    <li>To View All Current Assignments: Click on Assignments in the Navigation Bar</li>
+    <li>To View Archived Assignments: Assignments -> Archived Assignments</li>
+    <li>To Create Assignments: Assignments -> Add Assignment</li>
+    <li>
+        To Edit/Delete Assignments: Assignments -> Edit/Delete the Desired Assignment
+        <ul>
+            <li style="list-style-type: '-'"><b>Warning: Editing/Deleting an Assignment changes it for all sections using that assignment</b></li>
+        </ul>
+    </li>
+    <li>To Reactivate Archived Assignments: Assignments -> Archived Assignments -> Edit the Desired Assignment -> Change the Deadline to a future date</li>
+    <li>To Add Assignment to Course Section: Assignments -> Edit the Desired Assignment -> Check the Desired Section -> Save</li>
+    <li>To Remove Assignment from Course Section: Home -> Remove the Desired Assignment from the Specific Section</li>
+</ul>
+
+<h3>Reports</h3>
+<ul>
+    <li>To view Reports of Course Assignments: Home -> Click on Desired Assignment -> Report</li>
+    <li>To view Reports of Specific Questions: Home -> Click on Desired Assignment -> Click on Desired Question</li>
+</ul>
+
+<h3>Questions</h3>
+<ul>
+    <li>
+        To Create Questions:
+        <ul>
+            <li style="list-style-type: '-'">Assignments -> Click on Desired Assignment -> Add Question</li>
+        </ul>
+    </li>
+    <li>
+        To Edit/Delete Questions:
+        <ul>
+            <li style="list-style-type: '-'">Assignments -> Click on Desired Assignment -> Edit/Delete Desired Question</li>
+        </ul>
+    </li>
+</ul>
+
+<h4>Types of Questions:</h4>
+<p>The website supports two types of assignments at the moment</p>
+<p><u>Exact Matching</u></p>
+<p>This type of assignment's correction checks if the users output matches exactly with your output. It is case and whitespace sensitive, thus every space character must be taken into account when you give the website the output</p>
+<p><u>Regular Expressions</u></p>
+<p>For this type of question we ask the user to submit an output that matches a regular expressions code you have given to the website as output</p>
+<p>Take this sample correction output for example:</p>
+<p>"My name is: \w+"</p>
+<p>This output would be considered correct: "My name is: steve"</p>
+<p>The following outputs would be considered wrong:</p>
+<p>"My is: jad"</p>
+<p>"My name is: *"</p>
+<p>Test your regular expression code: <a href="http://www.regexr.com/">Regexr</a></p>
+<p>Keep in mind that the “\n” character will be considered as part of the output. Please press the Enter button to say that you want a line break.</p>

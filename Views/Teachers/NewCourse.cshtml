@@ -1,0 +1,28 @@
+﻿@model BobTheGrader.Models.Course
+@{
+    ViewBag.Title = "NewCourse";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Set Course</h2>
+
+@using (Html.BeginForm("CourseSave", "Teachers"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Title)
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @required = "" })
+        @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Semester)
+        @Html.TextBoxFor(m => m.Semester, new { @class = "form-control", @required = "", @pattern = @"((Spring)|(Fall)|(Summer)|(Winter)|(spring)|(fall)|(summer)|(winter))\s*\d+", @oninvalid = "this.setCustomValidity('Invalid Semester. ') ", @oninput = "setCustomValidity('')" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Deadline)
+        @Html.TextBoxFor(m => m.Deadline, new { @class = "form-control", @required = "", @pattern = @"\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{1,2}(:\d{1,2})* ((AM)|(PM))", @oninvalid = "this.setCustomValidity('The date should be of the format: mm/dd/yyyy hh:mm AM|PM') ", @oninput = "setCustomValidity('')" })
+        @Html.ValidationMessageFor(m => m.Deadline, "", new { @class = "text-danger" })
+    </div>
+
+    @Html.HiddenFor(m => m.CourseID)
+    <button type="submit" class="btn btn-primary" id="submit">Save and Proceed to Sections</button>
+}

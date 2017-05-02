@@ -1,0 +1,61 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<h2>Assignments</h2>
+
+@{
+    foreach (var scr in Model.SCRs)
+    {
+        
+        var ci = Model.CourseInstances.Where(p => p.CourseInstanceID == scr.CourseInstanceID).First();
+        <h4>@Model.Courses.Where(p => p.CourseID == ci.CourseID).Single().Title - Section @ci.SectionNumber</h4>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th width="30%">Title</th>
+                    <th width="40%">Due Date</th>
+                    <th width="20%">Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var cass in Model.CourseAssignments.Where(p => p.CourseInstanceID == ci.CourseInstanceID))
+                {
+                    DateTime? subdate = null;
+                    var assignment = Model.Assignments.Where(p => p.AssignmentID == cass.AssignmentID).First();
+                    string date = String.Format("{0:f}", assignment.DEADLINE);
+                    int exGrade = 0;
+                    int assGrade = 0;
+                    <tr>
+                        <td><a href="/Students/Submit/@cass.Course_AssignmentsID">@assignment.Title</a></td>
+                        <td>@date</td>
+                        <td>
+                            @foreach (var sub in scr.SUBMISSIONs)
+                            {
+                                if (sub.Question.AssignmentID == assignment.AssignmentID)
+                                {
+                                    assGrade += (int)sub.GRADE;
+                                    exGrade += sub.Question.MaximumGrade;
+                                    if (subdate == null)
+                                    {
+                                        subdate = sub.SubmittedDate;
+                                    }
+                                }
+
+                            }
+                            @{string result = "";}
+                            @{if (subdate != null) { result = Math.Round((assGrade * 1.0) / exGrade * 100) + ""; } else { result = "-"; } }
+                            @result
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <br />
+    }
+}

@@ -1,0 +1,67 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Course Assignments @Model.Line</h2>
+
+@foreach (var ci in Model.CourseInstances)
+{
+    string title = Model.Courses.Where(c => c.CourseID == ci.CourseID).First().Title;
+    <p>@title - Section @ci.SectionNumber</p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th width="30%">
+                    Assignment Report
+                </th>
+                <th width="55%">
+                    Due Date
+                </th>
+            </tr>
+        </thead>
+
+        @foreach (var ca in Model.CourseAssignments.Where(c => c.CourseInstanceID == ci.CourseInstanceID))
+        {
+            var assignment = Model.Assignments.Where(a => a.AssignmentID == ca.AssignmentID).First();
+            string date = String.Format("{0:f}", assignment.DEADLINE);
+            <tbody>
+                <tr>
+                    <td scope="row">
+                        @Html.ActionLink(assignment.Title, "AssignmentResults", new { id = ca.Course_AssignmentsID})
+                        @*<a href="AssignmentResults/@ca.Course_AssignmentsID">@assignment.Title</a>*@
+                    </td>
+                    <td>
+                        @date
+                    </td>
+                    <td width="15%">
+                        <button data-cassignment-id="@ca.Course_AssignmentsID" class="btn-link js-delete">Remove from Section</button>
+                    </td>
+                </tr>
+            </tbody>
+        }
+    </table>
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("table").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to remove this assignment from this specific section?\n*This will permanently delete all of this section's student data related to this assignment.", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/CourseAssignments/" + button.attr("data-cassignment-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

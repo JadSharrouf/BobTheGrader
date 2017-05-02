@@ -1,0 +1,28 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+@{
+    ViewBag.Title = "NewSection";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Set Section</h2>
+
+@using (Html.BeginForm("SaveSection", "Teachers", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype ="multipart/form-data"}))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.CourseInstance.SectionNumber)
+        @Html.TextBoxFor(m => m.CourseInstance.SectionNumber, new { @class = "form-control", @required = "", @pattern = @"^\d+$", @oninvalid = "this.setCustomValidity('Section must be a number.') ", @oninput = "setCustomValidity('')" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.CourseInstance.TEACHERID)
+        @Html.DropDownListFor(m => m.CourseInstance.TEACHERID, new SelectList(Model.Users.Where(u => u.UserRoleID > 2), "UserId", "UserName"), "Assign Teacher", new { @class = "form-control", @required = "" })
+    </div>
+    <p style="font-style:italic; color:#d9230f">In order to add students, simply upload a text file ('.txt') containing their emails line by line</p>
+    @Html.HiddenFor(m => m.CourseInstance.CourseID)
+    @Html.HiddenFor(m => m.CourseInstance.CourseInstanceID)
+
+    <input type="file" name="file" id="file" />
+    <br />
+    <button type="submit" class="btn btn-primary" id="submit">Save Section</button>
+    @Html.Raw(ViewBag.message)
+    @Html.Raw(ViewBag.notadded)
+}

@@ -1,0 +1,137 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+@{
+    ViewBag.Title = "Report";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2><u>@Model.assignment.Title</u></h2>
+
+<h2><span style="font-size: 90%">@Model.CourseInstance.Course.Title -</span> <span style="font-size: 80%">Section @Model.CourseInstance.SectionNumber</span></h2>
+
+<br>
+@*get total grade*@
+@{double totalGrade = 0; }
+@foreach (var item in Model.Questions)
+{
+    totalGrade += item.MaximumGrade;
+}
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+	  var names;
+	  var grades;
+	  window.onload = function(){
+		names = document.getElementsByClassName("name");
+		grades = document.getElementsByClassName("average");
+
+	  }
+      function drawChart() {
+
+
+		var data2 = [['name', 'grade']];
+             for (i = 0; i < grades.length; i++) {
+                    data2[i + 1] = [names[i].innerHTML, grades[i].innerHTML];
+             }
+		var data = google.visualization.arrayToDataTable(data2);
+        var options = {
+    title: 'Distribution of grades',
+    legend: { position: 'none' },
+    colors: ['#4285F4'],
+
+    chartArea: { width: 500 },
+    hAxis: {
+        ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+        title: 'Grades'
+    },
+    vAxis: {
+        title: 'Number of Students'
+    },
+    bar: { gap: 0 },
+
+    histogram: {
+      bucketSize: 0.05,
+      maxNumBuckets: 200,
+      minValue: 0,
+      maxValue: 100
+    },
+
+    backgroundColor: {
+        fill: '#fcfcfc'
+    }
+  };
+
+        var chart = new google.visualization.Histogram(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+</script>
+@{ int i = 0; int maxGrade = 0; int minGrade = 100; double mean = 0; double median = 0; int[] grades = new int[Model.Users.Count()]; double num1 = 0; double[] num2 = new double[Model.Users.Count()]; double std = 0;}
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Grade
+            </th>
+        </tr>
+    </thead>
+    <tbody>             
+        @foreach (var user in Model.Users)
+        {
+            var stGrade = 0;
+            var name = user.UserName;
+            var scr = Model.SCRs.Where(s => s.STUDENTID == user.UserId).First();
+
+            foreach (var q in Model.Questions)
+            {
+                foreach (var sub in Model.Submissions.Where(p => (p.StudentCourseRegistrationID == scr.StudentCourseRegistrationID && p.QuestionID == q.QuestionID)))
+                {
+                    stGrade += (int)sub.GRADE;
+
+                }
+            }
+            double average = Math.Round(stGrade / totalGrade * 100);
+            if (double.IsNaN(average)) { average = 0; }
+                <tr>
+                    <td class="name">@name</td>
+                    <td class="average">@average</td>
+                </tr>
+            if (maxGrade < average) { maxGrade = (int)average; }
+            if (minGrade > average) { minGrade = (int)average; }
+            mean += average;
+
+            grades[i] = (int)average;
+            i++;
+        }
+        @{mean = Math.Round(mean /Model.Users.Count(),2); Array.Sort(grades);
+            if (Model.Users.Count() % 2 == 0)
+            {
+                median = Math.Round((grades[(grades.Length / 2) - 1] + grades[grades.Length / 2])/2.0,2);
+            }
+            else { median = grades[grades.Length / 2]; }
+            for(int k = 0; k < grades.Length; k++)
+            {
+                num2[k] = Math.Pow(grades[k] - mean, 2);
+            }
+            double numX = 0;
+            foreach(double j in num2)
+            {
+                numX = (num1 += j);
+            }
+            std = Math.Round(Math.Sqrt(numX / (grades.Length - 1)),2);
+            //std2 = Math.Sqrt(numX / (grades.Length));
+        }
+    </tbody>
+
+</table>
+
+<div id="chart_div" style="width: 900px; height: 500px;"></div>
+<h2>Assignment Statistics</h2>
+
+<p>Maximum Grade: @maxGrade</p>
+<p>Minimum Grade: @minGrade</p>
+<p>Mean: @mean</p>
+<p>Median: @median</p>
+<p>Standard Deviation: @std</p>

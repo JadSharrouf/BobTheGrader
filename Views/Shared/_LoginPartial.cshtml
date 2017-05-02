@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken() 
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @{ string name = User.Identity.Name; string n = new BobTheGrader.Models.graderEntities().Users.Where(u => u.Email == name).First().UserName;}
+            @Html.ActionLink("Hello " + n + "!", "", "", routeValues: null, htmlAttributes: new { title = "Manage", id = "lol" })
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+    </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}
+<script>
+    document.getElementById("lol").onclick = function() {
+        return false;
+    }
+</script>

@@ -1,0 +1,20 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+@{
+    ViewBag.Title = "ChangeRole";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Change Role</h2>
+
+<h3>@Model.user.UserName</h3>
+
+@using (Html.BeginForm("RoleSave", "Teachers"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.user.UserRoleID)
+        @Html.DropDownListFor(m => m.user.UserRoleID, new SelectList(Model.UserRoles, "UserRoleID", "Title"), "Select Role", new { @class = "form-control" })
+    </div>
+
+    @Html.HiddenFor(m => m.user.UserId)
+    <button type="submit" class="btn btn-primary" id="submit">Change Role</button>
+}

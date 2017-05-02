@@ -1,0 +1,67 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+
+@{
+    ViewBag.Title = "NewQuestion";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+@*<script>
+    window.onload = function () {
+        document.getElementById("submit").onclick = method;
+    }
+    function method() {
+        var array = document.getElementById("output").value.split('\n');
+        var s = "";
+        var i = 0;
+        for (i = 0; i < array.length - 1 ; i++) {
+            if (array[i].charAt(array[i].length - 2) == '\\' && array[i].charAt(array[i].length - 1) == 'n') {
+                   s += array[i] + "\n";
+            }
+            else if (i < array.length - 1) {
+                s += array[i] + "\\n" + "\n";
+            }
+        }
+        s += array[i];
+
+        document.getElementById("output").value = s;
+    }
+
+</script>*@
+
+<h2>Set Question</h2>
+
+<br />
+
+@using (Html.BeginForm("QuestionSave", "Teachers"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.question.Title)
+        @Html.TextBoxFor(m => m.question.Title, new { @class = "form-control", @required = "" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.question.MaximumTries)
+        @Html.TextBoxFor(m => m.question.MaximumTries, new { @class = "form-control", @required = "", @pattern = @"^\d+$", @oninvalid = "this.setCustomValidity('Maximum tries should be a number.') ", @oninput = "setCustomValidity('')" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.question.MaximumGrade)
+        @Html.TextBoxFor(m => m.question.MaximumGrade, new { @class = "form-control", @required = "", @pattern = @"^\d+$", @oninvalid = "this.setCustomValidity('Maximum grade should be a number.') ", @oninput = "setCustomValidity('')" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.question.QuestionTypeID)
+        @Html.DropDownListFor(m => m.question.QuestionTypeID, new SelectList(Model.QuestionTypes, "QuestionTypeID", "Title"), "Select Question Type", new { @class = "form-control", @required = "" })
+    </div>
+    <div class="form-group">
+        <p style="font-style:italic; color:#d9230f">If you want to skip a line, just press enter rather than '\n'</p>
+        @Html.LabelFor(m => m.question.output)
+        @Html.TextAreaFor(m => m.question.output, 10, 55, new { @class = "form-control", id = "output", style = "font-family:consolas", @required = "", @wrap = "off" })
+    </div>
+
+    @Html.HiddenFor(m => m.question.AssignmentID)
+    @Html.HiddenFor(m => m.question.QuestionID)
+
+    <button type="submit" class="btn btn-primary" id="submit">Save Question</button>
+}
+
+<script>
+    $('textarea').css("resize", "vertical");
+    $('textarea').css("resize", "horizontal");
+</script>

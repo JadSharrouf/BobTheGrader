@@ -1,0 +1,77 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+
+@{
+    ViewBag.Title = "Courses";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Courses <span style="float:right ">@Html.ActionLink("Add Course", "NewCourse")</span></h2>
+
+<table id="courses" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Semester
+            </th>
+            <th>
+                Number of Sections
+            </th>
+            <th>
+                Deadline
+            </th>
+        </tr>
+    </thead>
+
+    @foreach (var course in Model.Courses)
+    {
+        //put format for deadline
+        string date = String.Format("{0:dddd, MMMM d, yyyy}", course.Deadline);
+        var count = Model.CourseInstances.Where(c => c.CourseID == course.CourseID).Count();
+        <tbody>
+            <tr>
+                <td scope="row">
+                    <a href="ViewSections/@course.CourseID">@course.Title</a>
+                </td>
+                <td>
+                    @course.Semester
+                </td>
+                <td>
+                    @count
+                </td>
+                <td>
+                    @date
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "CourseEdit", new { id = course.CourseID })
+                </td>
+                <td>
+                    <button data-course-id="@course.CourseID" class="btn-link js-delete">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#courses").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to remove this course?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://bobthegrader.azurewebsites.net/api/Courses/" + button.attr("data-course-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+ }

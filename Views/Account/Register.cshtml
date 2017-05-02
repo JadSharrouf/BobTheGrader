@@ -1,0 +1,48 @@
+﻿@model BobTheGrader.Models.User
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <h4>Please use your aub email to register</h4>
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName)
+        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @required = "" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", id = "email", @pattern = @"\w{2,3}\d+@((mail\.aub\.edu)|(aub\.edu\.lb))", @required = "", @oninvalid = "this.setCustomValidity('Please use your aub email.') ", @oninput = "setCustomValidity('')" })
+        @Html.Raw(ViewBag.message)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password)
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @pattern = @"^(?=.*[A-Z])(?=.*\d).{8,}$", id = "pass", @required = "", @oninvalid = "this.setCustomValidity('Password must contain at least 8 characters, have one uppercase letter and one digit character') ", @oninput = "setCustomValidity('')" })
+     </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword)
+        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", id = "cpass", @required ="" })
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="submit">Register</button>
+}
+
+<script>
+    window.onload = function () {
+        document.getElementById("submit").onclick = check;
+    }
+    function check() {
+        if (document.getElementById("pass").value != document.getElementById("cpass").value) {
+            alert("passwords don't match");
+            return false;
+        }
+    }
+</script>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

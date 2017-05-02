@@ -1,0 +1,130 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+@{
+    ViewBag.Title = "RoleControl";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Users</h2>
+@{ int count = 0;}
+@foreach (var roles in Model.UserRoles.OrderByDescending(u => u.UserRoleID))
+{
+    <h4>@roles.Title</h4>
+    <table class="table table-bordered table-hover" id="@count">
+        <thead>
+            <tr>
+                <th width="30%">
+                    Name
+                </th>
+                <th width="40%">
+                    Email
+                </th>
+            </tr>
+        </thead>
+
+        @foreach (var user in Model.Users.Where(u => u.UserRoleID == roles.UserRoleID))
+        {
+            <tbody>
+                <tr>
+                    <td scope="row">
+                        @user.UserName
+                    </td>
+                    <td>
+                        @user.Email
+                    </td>
+                    <td width="15%">
+                        @Html.ActionLink("Change Role", "ChangeRole", new { id = user.UserId })
+                    </td>
+                    <td width="15%">
+                        <button data-user-id="@user.UserId" class="btn-link js-delete">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        }
+    </table>
+    count++;
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            if ($('#0 tr').length > 2) {
+                $("#0").on("click", ".js-delete", function () {
+                    var button = $(this);
+                    bootbox.confirm("Are you sure you want to remove this admin?", function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: "http://bobthegrader.azurewebsites.net/api/users/" + button.attr("data-user-id"),
+                                method: "DELETE",
+                                success: function () {
+                                    button.parents("tr").remove();
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+            else {
+                $("#0").on("click", ".js-delete", function () {
+                    var button = $(this);
+                    bootbox.confirm("Can't delete last Admin!", function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: "http://bobthegrader.azurewebsites.net/api/users/" + button.attr("data-user-id"),
+                                method: "DELETE"
+                            });
+                        }
+                    });
+                });
+            }
+        });
+        $(document).ready(function () {
+            $("#1").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to remove this teacher?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://bobthegrader.azurewebsites.net/api/users/" + button.attr("data-user-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();                               
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $("#2").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to remove this student?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://bobthegrader.azurewebsites.net/api/users/" + button.attr("data-user-id"),
+                            method: "DELETE",
+                            success: function () {
+                                 button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        $(document).ready(function () {
+            $("#3").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to remove this user?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://bobthegrader.azurewebsites.net/api/users/" + button.attr("data-user-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+

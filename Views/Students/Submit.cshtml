@@ -1,0 +1,104 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+@{
+    ViewBag.Title = "Submit";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<h2>@Model.assignment.Title</h2>
+
+<h3>Description</h3>
+
+@{ bool check = false; if (Model.assignment.Link.Contains("http")) { check = true; }}
+
+<p>@Model.assignment.Description</p>
+@{ if (check)
+    {
+        <a href="@Model.assignment.Link">@Model.assignment.Link</a>
+    }
+    else
+    {
+        <a href="http://@Model.assignment.Link">@Model.assignment.Link</a>
+    }
+}
+
+
+<h3>Submission status</h3>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <td style="width:10px" scope="row">Status</td>
+            <td>Submitted for grading</td>
+        </tr>
+        <tr>
+            <td scope="row">Grade</td>
+            <td>
+                @{
+                    int exGrade = 0;
+                    int assGrade = 0;
+                    DateTime? subdate = null;
+                }
+                @*Get Student Assignment Grade*@
+                @foreach (var q in Model.Questions)
+                {
+                    var sub = Model.Submissions.Where(s => s.QuestionID == q.QuestionID).First();
+                    assGrade += (int)sub.GRADE;
+                    exGrade += sub.Question.MaximumGrade;
+                    if (subdate == null)
+                    {
+                        subdate = sub.SubmittedDate;
+                    }
+
+                }
+                @{string result = "";}
+                @{if (subdate != null) { result = Math.Round((assGrade * 1.0) / exGrade * 100) + ""; } else { result = "-"; } }
+                @result
+            </td>
+        </tr>
+        <tr>
+            @{TimeSpan span = Model.assignment.DEADLINE.Subtract(DateTime.Now);}
+            @{string dateLeft = String.Format("{0} days, {1} hours, {2} minutes, {3} seconds", span.Days, span.Hours, span.Minutes, span.Seconds);}
+            @{string date = String.Format("{0:f}", Model.assignment.DEADLINE);}
+            <td scope="row">Due Date</td>
+            <td>@date</td>
+        </tr>
+        <tr>
+            <td scope="row">Time Remaining</td>
+            <td>@dateLeft</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<h4>Question Submission:</h4>
+<div id="box">Upload your zipped file to the corresponding question box.</div>
+<br />
+@{int count = 0; int subId = 0; int questionId = 0; string output = ""; int grade = 0;}
+@foreach (var item in Model.Questions)
+{
+    count++;
+    <div id="box">
+        @{int triesLeft = 0, triesDone = 0;}
+        @foreach (var sub in Model.Submissions)
+        {
+            if (sub.QuestionID == item.QuestionID)
+            {
+                triesDone = sub.TRIES;
+                subId = sub.SubmissionID;
+                questionId = sub.QuestionID;
+                output = sub.Result;
+                grade = (int)sub.GRADE;
+            }
+        }
+        @{triesLeft = item.MaximumTries - triesDone;}
+        <div id="box">Question @count   -  Tries Left: @triesLeft - @grade/@item.MaximumGrade</div>
+        <form action="" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" id="file" />
+            <input type="submit" name="submit" value="Submit Question @count"/>
+            <p>@output</p>
+            <input type="hidden" name="subID" value="@subId" />
+            <input type="hidden" name="questionID" value="@questionId" />
+        </form>       
+         <br />
+    </div>                    
+}

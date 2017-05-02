@@ -1,0 +1,73 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+
+@{
+    ViewBag.Title = "QuestionResults";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>@Model.question.Title</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                Student
+            </th>
+            <th>
+                Tries
+            </th>
+            <th>
+                Grade /@Model.question.MaximumGrade
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            double averageGrade = 0;
+            double averageTries = 0;
+            var count = 0;
+            foreach (var s in Model.Submissions)
+            {
+                var grade = 0;
+                var tries = 0;
+                string name = "";
+                foreach (var scr in Model.SCRs)
+                {
+                    if (scr.StudentCourseRegistrationID == s.StudentCourseRegistrationID)
+                    {
+                        foreach (var st in Model.Users)
+                        {
+                            if (st.UserId == scr.STUDENTID)
+                            {
+                                grade = (int)s.GRADE;
+                                averageGrade += grade;
+                                tries = s.TRIES;
+                                averageTries += tries;
+                                count++;
+                                name = st.UserName;
+                                <tr>
+                                    <td>@name</td>
+                                    <td>@tries</td>
+                                    <td>@grade</td>
+                                </tr>
+                            }
+                        }
+                       
+                    }
+                }
+            }
+            averageGrade = Math.Round((averageGrade / count * 1.0),2);
+            averageTries = Math.Round((averageTries / count * 1.0),2);
+        }
+    </tbody>
+</table>
+<p><b>Average Grade: </b>@averageGrade</p>
+<p><b>Average Number of Tries: </b>@averageTries</p>
+
+<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+<script>
+          $(function(){
+              $("table").DataTable();
+          })
+</script>

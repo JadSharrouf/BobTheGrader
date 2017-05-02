@@ -1,0 +1,79 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+
+@{
+
+    ViewBag.Title = "AssignmentResults";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2><u>@Model.assignment.Title</u></h2>
+
+<h2><span style="font-size: 90%">@Model.CourseInstance.Course.Title -</span> <span style="font-size: 80%">Section @Model.CourseInstance.SectionNumber</span><span style="float:right "><a href="http://bobthegrader.azurewebsites.net/Teachers/Report/@Model.CourseAssignment.Course_AssignmentsID">Report</a></span></h2>
+<h3>Results</h3>
+
+<table id="questions" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Question</th>
+            <th>Maximum Tries</th>
+            <th>Type</th>
+            <th>Grade</th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model.Questions)
+    {
+        string type = "";
+        <tbody>                  
+            <tr>
+                <td scope="row">
+                    @Html.ActionLink(item.Title, "QuestionResults", new { ca = Model.CourseAssignment.Course_AssignmentsID, id = item.QuestionID })
+                    @*<a href="http://bobthegrader.azurewebsites.net/Teachers/QuestionResults/@Model.CourseAssignment.Course_AssignmentsID/@item.QuestionID">@item.Title</a>*@                  
+                </td>
+                <td>
+                    @item.MaximumTries
+                </td>
+                <td>
+                    @{ if (item.QuestionTypeID == 1) { type = "Exact Matching"; }
+                        else if (item.QuestionTypeID == 2) { type = "Regular Expressions"; }
+                        else { type = "Arguments"; }
+                    }
+                    @type
+                </td>
+                <td>
+                    @item.MaximumGrade
+                </td>
+                @*<td>
+                    @Html.ActionLink("Edit", "QuestionEdit", new { id = item.QuestionID })
+                </td>
+                <td>
+                    <button data-question-id="@item.QuestionID" class="btn-link js-delete">Delete</button>
+                </td>*@                       
+            </tr>              
+        </tbody>
+    }
+
+</table>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#questions").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to delete this question?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/questions/" + button.attr("data-question-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,62 @@
+﻿@model  BobTheGrader.Models.MultiViewModel
+@{
+    ViewBag.Title = "ViewStudents";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>@ViewBag.message</h2>
+<h3>Students</h3>
+<br />
+
+<table id="student" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th width="40%">
+                Name
+            </th>
+            <th width="40%">
+                Email
+            </th>
+        </tr>
+    </thead>
+
+    @foreach (var student in Model.Users)
+    {
+        var scr = Model.SCRs.Where(s => s.STUDENTID == student.UserId).First();
+        <tbody>
+            <tr>
+                <td scope="row" width="40%">
+                    @student.UserName
+                </td>
+                <td width="40%">
+                    @student.Email
+                </td>
+                <td width="20%">
+                    <button data-student-id="@scr.StudentCourseRegistrationID" class="btn-link js-delete">Remove from section</button>
+                </td>
+            </tr>
+        </tbody>
+    }
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#student").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to remove this student from this section?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://bobthegrader.azurewebsites.net/api/studentSections/" + button.attr("data-student-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

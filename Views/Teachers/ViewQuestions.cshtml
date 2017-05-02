@@ -1,0 +1,76 @@
+﻿@model BobTheGrader.Models.MultiViewModel
+@{
+    ViewBag.Title = "ViewQuestions";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<h2>Questions <span style="float:right ">@Html.ActionLink("Add Question", "NewQuestion", new { id = Model.assignment.AssignmentID })</span></h2>
+
+<table id="questions" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Maximum Tries
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Grade
+            </th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model.Questions)
+    {
+        <tbody>
+            <tr>
+                <td scope="row">
+                    @item.Title
+                </td>
+                <td>
+                    @item.MaximumTries
+                </td>
+                <td>
+                    @Model.QuestionTypes.Where(p => p.QuestionTypeID == item.QuestionTypeID).First().Title
+                    @*@item.QuestionType.Title*@
+                </td>
+                <td>
+                    @item.MaximumGrade
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "QuestionEdit", new { id = item.QuestionID })
+                </td>
+                <td>
+                    <button data-question-id="@item.QuestionID" class="btn-link js-delete">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    }
+
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#questions").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to delete this question?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "http://bobthegrader.azurewebsites.net/api/questions/" + button.attr("data-question-id"),
+                            method: "DELETE",
+                            success: function () {
+                                button.parents("tr").remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
